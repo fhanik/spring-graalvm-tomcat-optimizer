@@ -67,6 +67,20 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>org.springframework.graalvm.maven</groupId>
+				<artifactId>spring-graalvm-tomcat-optimizer</artifactId>
+				<version>0.9-SNAPSHOT</version>
+				<executions>
+					<execution>
+						<id>touch</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>touch</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 

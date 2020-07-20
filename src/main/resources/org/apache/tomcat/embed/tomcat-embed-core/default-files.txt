@@ -1,0 +1,262 @@
+<!-- Jaspic API -->
+include.files=javax/security/auth/message/**
+
+<!-- Tomcat JULI Logging -->
+include.files=org/apache/juli/**
+
+<!-- Servlet -->
+include.files=javax/servlet/**
+include.files=javax/servlet/annotation/**
+include.files=javax/servlet/http/**
+exclude.files=javax/servlet/descriptor/**
+exclude.files=javax/servlet/jsp/**
+exclude.files=javax/servlet/resources/**
+
+<!-- AprLifecycleListener is configured by default -->
+include.files=**/AprLifecycleListener.*
+include.files=**/AprStatus.*
+
+<!-- Remove dynamic mbean descriptors -->
+exclude.files=**/mbeans-descriptors.xml
+exclude.files=**/mbeans-descriptors.dtd
+<!-- No JMX Support - But we can't remove the classes -->
+include.files=org/apache/tomcat/util/modeler/LocalStrings.properties
+include.files=org/apache/tomcat/util/modeler/AttributeInfo*
+include.files=org/apache/tomcat/util/modeler/BaseModelMBean*
+include.files=org/apache/tomcat/util/modeler/FeatureInfo*
+include.files=org/apache/tomcat/util/modeler/ManagedBean*
+include.files=org/apache/tomcat/util/modeler/NoDescriptorRegistry*
+include.files=org/apache/tomcat/util/modeler/NotificationInfo*
+include.files=org/apache/tomcat/util/modeler/Registry*
+include.files=org/apache/tomcat/util/modeler/RegistryMBean*
+include.files=org/apache/tomcat/util/modeler/Util*
+include.files=org/apache/tomcat/util/modeler/modules/ModelerSource*
+
+<!-- Apache Tomcat Core Code -->
+include.files=org/apache/catalina/*
+include.files=org/apache/catalina/authenticator/**
+include.files=org/apache/catalina/connector/**
+include.files=org/apache/catalina/core/**
+include.files=org/apache/catalina/deploy/**
+include.files=org/apache/catalina/filters/**
+include.files=org/apache/catalina/loader/**
+include.files=org/apache/catalina/mapper/**
+include.files=org/apache/catalina/mbeans/**
+include.files=org/apache/catalina/realm/**
+include.files=org/apache/catalina/security/**
+include.files=org/apache/catalina/session/**
+include.files=org/apache/catalina/startup/**
+include.files=org/apache/catalina/util/**
+include.files=org/apache/catalina/valves/*
+include.files=org/apache/catalina/webresources/**
+include.files=org/apache/coyote/**
+include.files=org/apache/naming/**
+include.files=org/apache/tomcat/*
+include.files=org/apache/tomcat/util/*
+include.files=org/apache/tomcat/util/bcel/**
+include.files=org/apache/tomcat/util/buf/**
+include.files=org/apache/tomcat/util/codec/**
+include.files=org/apache/tomcat/util/collections/**
+include.files=org/apache/tomcat/util/compat/**
+include.files=org/apache/tomcat/util/descriptor/**
+include.files=org/apache/tomcat/util/file/**
+include.files=org/apache/tomcat/util/http/**
+include.files=org/apache/tomcat/util/json/**
+include.files=org/apache/tomcat/util/log/**
+include.files=org/apache/tomcat/util/net/**
+include.files=org/apache/tomcat/util/res/**
+include.files=org/apache/tomcat/util/security/**
+include.files=org/apache/tomcat/util/threads/**
+
+<!-- Some of the core code depends on the jar scanner -->
+include.files=org/apache/tomcat/util/scan/StandardJarScan*
+include.files=org/apache/tomcat/util/scan/LocalStrings.properties
+
+<!-- Minimize JNI to what doesn't throw an error -->
+include.files=org/apache/tomcat/jni/Library.class
+include.files=org/apache/tomcat/jni/LibraryNotFoundError*
+exclude.files=org/apache/tomcat/jni
+
+<!-- Remove connectors that are not default -->
+exclude.files=**/AbstractAjpProtocol.class
+exclude.files=**/Ajp*.class
+exclude.files=**/AjpApr*.class
+exclude.files=**/Http11Apr*.class
+exclude.files=**/Http11Nio2*.class
+exclude.files=**/JniLifecycleListener.class
+exclude.files=org/apache/tomcat/**/*Nio2*.class
+exclude.files=org/apache/tomcat/**/Apr*.class
+
+<!-- Minimize bundles to the default set -->
+exclude.files=org/apache/**/LocalStrings_*.properties
+
+<!-- Remove digester support -->
+exclude.files=org/apache/catalina/**/*Rule.class
+exclude.files=org/apache/catalina/**/*RuleSet*.class
+exclude.files=org/apache/tomcat/**/*RuleSet*.class
+
+<!-- Remove various Apache Tomcat modules not used by default in an embedded setting -->
+exclude.files=org/apache/catalina/ant/**
+exclude.files=org/apache/catalina/ha/**
+exclude.files=org/apache/catalina/manager/**
+exclude.files=org/apache/catalina/ssi/**
+exclude.files=org/apache/catalina/storeconfig/**
+exclude.files=org/apache/catalina/tribes/**
+exclude.files=org/apache/catalina/valves/rewrite/**
+exclude.files=org/apache/tomcat/buildutil
+exclude.files=org/apache/tomcat/dbcp
+
+<!-- Remove authenticator classes -->
+exclude.files=org/apache/catalina/authenticator/BasicAuthenticator*
+exclude.files=org/apache/catalina/authenticator/DigestAuthenticator*
+exclude.files=org/apache/catalina/authenticator/FormAuthenticator*
+exclude.files=org/apache/catalina/authenticator/SingleSignOnE*
+exclude.files=org/apache/catalina/authenticator/SingleSignOnL*
+exclude.files=org/apache/catalina/authenticator/SingleSignOnS*
+exclude.files=org/apache/catalina/authenticator/Spnego*
+exclude.files=org/apache/catalina/authenticator/SSLAuthenticator*
+exclude.files=org/apache/catalina/authenticator/jaspcic/Simple*
+
+<!-- Remove optional filter classes -->
+exclude.files=org/apache/catalina/filters/**
+
+<!-- Remove Realm classes -->
+exclude.files=org/apache/catalina/realm/AuthenticatedUserRealm.class
+exclude.files=org/apache/catalina/realm/CombinedRealm.class
+exclude.files=org/apache/catalina/realm/DataSourceRealm.class
+exclude.files=org/apache/catalina/realm/JAASCallbackHandler.class
+exclude.files=org/apache/catalina/realm/JAASMemoryLoginModule.class
+exclude.files=org/apache/catalina/realm/JAASRealm.class
+exclude.files=org/apache/catalina/realm/JDBCRealm.class
+exclude.files=org/apache/catalina/realm/JNDIRealm$User.class
+exclude.files=org/apache/catalina/realm/JNDIRealm.class
+exclude.files=org/apache/catalina/realm/LockOutRealm*
+exclude.files=org/apache/catalina/realm/MemoryRealm.class
+exclude.files=org/apache/catalina/realm/NestedCredentialHandler.class
+exclude.files=org/apache/catalina/realm/UserDatabaseRealm.class
+
+<!-- Remove optional servlets -->
+exclude.files=org/apache/catalina/servlets/**
+
+<!-- Remove all but the standard session management -->
+exclude.files=org/apache/catalina/session/JDBC*
+exclude.files=org/apache/catalina/session/File*
+exclude.files=org/apache/catalina/session/Persistent*
+exclude.files=org/apache/catalina/session/StoreBase*
+
+<!-- Remove users -->
+exclude.files=org/apache/catalina/users/**
+
+<!-- Remove optional valves -->
+exclude.files=org/apache/catalina/valves/Crawler*
+exclude.files=org/apache/catalina/valves/ExtendedAccessLogValve*
+exclude.files=org/apache/catalina/valves/ExtendedAccessLogValve*
+exclude.files=org/apache/catalina/valves/HealthCheckValve*
+exclude.files=org/apache/catalina/valves/JDBCAccessLogValve*
+exclude.files=org/apache/catalina/valves/LoadBalancerDrainingValve*
+exclude.files=org/apache/catalina/valves/PersistentValve*
+
+<!-- Remove web resources classes, default is the EmptyResourceSet -->
+exclude.files=org/apache/catalina/webresources/AbstractArchiveResource*
+exclude.files=org/apache/catalina/webresources/AbstractSingleArchiveResource*
+exclude.files=org/apache/catalina/webresources/ExtractingRoot*
+exclude.files=org/apache/catalina/webresources/FileResource*
+exclude.files=org/apache/catalina/webresources/JarResource*
+exclude.files=org/apache/catalina/webresources/JarWarResource*
+exclude.files=org/apache/catalina/webresources/TomcatJarInputStream*
+exclude.files=org/apache/catalina/webresources/TrackedInputStream*
+exclude.files=org/apache/catalina/webresources/VirtualResource*
+exclude.files=org/apache/catalina/webresources/WarResource*
+exclude.files=org/apache/catalina/webresources/WarResource*
+exclude.files=org/apache/catalina/webresources/war/WarURLConnection*
+
+<!-- Remove most JNDI stuff -->
+exclude.files=org/apache/naming/EjbRef*
+exclude.files=org/apache/naming/factory/BeanFactory*
+exclude.files=org/apache/naming/factory/DataSourceLinkFactory*
+exclude.files=org/apache/naming/factory/EjbFactory*
+exclude.files=org/apache/naming/factory/LookupFactory*
+exclude.files=org/apache/naming/factory/MailSessionFactory*
+exclude.files=org/apache/naming/factory/OpenEjbFactory*
+exclude.files=org/apache/naming/factory/ResourceEnvFactory*
+exclude.files=org/apache/naming/factory/ResourceFactory*
+exclude.files=org/apache/naming/factory/ResourceLinkFactory*
+exclude.files=org/apache/naming/factory/SendMailFactory*
+exclude.files=org/apache/naming/factory/TransactionFactory*
+exclude.files=org/apache/naming/factory/webservices/*
+exclude.files=org/apache/naming/LookupRef*
+exclude.files=org/apache/naming/NameParserImpl*
+exclude.files=org/apache/naming/NamingContextBindingsEnumeration*
+exclude.files=org/apache/naming/NamingContext*
+exclude.files=org/apache/naming/NamingContextEnumeration*
+exclude.files=org/apache/naming/NamingEntry*
+exclude.files=org/apache/naming/ResourceEnvRef*
+exclude.files=org/apache/naming/ResourceLinkRef*
+exclude.files=org/apache/naming/ResourceRef*
+exclude.files=org/apache/naming/SelectorContext*
+exclude.files=org/apache/naming/ServiceRef*
+exclude.files=org/apache/naming/TransactionRef*
+
+<!-- remove BCEL support -->
+exclude.files=org/apache/tomcat/util/bcel/**
+
+<!-- remove web descriptor elements -->
+exclude.files=org/apache/tomcat/util/descriptor/DigesterFactory*
+exclude.files=org/apache/tomcat/util/descriptor/InputSourceUtil*
+exclude.files=org/apache/tomcat/util/descriptor/LocalResolver*
+exclude.files=org/apache/tomcat/util/descriptor/web/AbsoluteOrderingRule*
+exclude.files=org/apache/tomcat/util/descriptor/web/CallMethodMultiRule*
+exclude.files=org/apache/tomcat/util/descriptor/web/CallParamMultiRule*
+exclude.files=org/apache/tomcat/util/descriptor/web/ContextHandler*
+exclude.files=org/apache/tomcat/util/descriptor/web/ContextResourceLink*
+exclude.files=org/apache/tomcat/util/descriptor/web/ContextTransaction*
+exclude.files=org/apache/tomcat/util/descriptor/web/FragmentJarScannerCallback*
+exclude.files=org/apache/tomcat/util/descriptor/web/IgnoreAnnotationsRule*
+exclude.files=org/apache/tomcat/util/descriptor/web/InjectionTarget*
+exclude.files=org/apache/tomcat/util/descriptor/web/JspConfigDescriptorImpl*
+exclude.files=org/apache/tomcat/util/descriptor/web/JspPropertyGroup*
+exclude.files=org/apache/tomcat/util/descriptor/web/JspPropertyGroupDescriptorImpl*
+exclude.files=org/apache/tomcat/util/descriptor/web/LifecycleCallbackRule*
+exclude.files=org/apache/tomcat/util/descriptor/web/MappedNameRule*
+exclude.files=org/apache/tomcat/util/descriptor/web/MultipartDef*
+exclude.files=org/apache/tomcat/util/descriptor/web/NameRule*
+exclude.files=org/apache/tomcat/util/descriptor/web/RelativeOrderingRule*
+exclude.files=org/apache/tomcat/util/descriptor/web/SecurityCollection*
+exclude.files=org/apache/tomcat/util/descriptor/web/SecurityRoleRef*
+exclude.files=org/apache/tomcat/util/descriptor/web/ServiceQnameRule*
+exclude.files=org/apache/tomcat/util/descriptor/web/ServletDef*
+exclude.files=org/apache/tomcat/util/descriptor/web/ServletDefCreateRule*
+exclude.files=org/apache/tomcat/util/descriptor/web/SessionConfig*
+exclude.files=org/apache/tomcat/util/descriptor/web/SetAuthConstraintRule*
+exclude.files=org/apache/tomcat/util/descriptor/web/SetDenyUncoveredHttpMethodsRule*
+exclude.files=org/apache/tomcat/util/descriptor/web/SetDistributableRule*
+exclude.files=org/apache/tomcat/util/descriptor/web/SetJspConfig*
+exclude.files=org/apache/tomcat/util/descriptor/web/SetLoginConfig*
+exclude.files=org/apache/tomcat/util/descriptor/web/SetOverrideRule*
+exclude.files=org/apache/tomcat/util/descriptor/web/SetPublicIdRule*
+exclude.files=org/apache/tomcat/util/descriptor/web/SetSessionConfig*
+exclude.files=org/apache/tomcat/util/descriptor/web/SoapHeaderRule*
+exclude.files=org/apache/tomcat/util/descriptor/web/TaglibDescriptorImpl*
+exclude.files=org/apache/tomcat/util/descriptor/web/TaglibLocationRule*
+exclude.files=org/apache/tomcat/util/descriptor/web/VersionRule*
+exclude.files=org/apache/tomcat/util/descriptor/web/WebXml*
+exclude.files=org/apache/tomcat/util/descriptor/web/WebXmlParser*
+exclude.files=org/apache/tomcat/util/descriptor/XmlErrorHandler*
+exclude.files=org/apache/tomcat/util/descriptor/XmlIdentifiers*
+
+<!-- remove taglibrary support -->
+exclude.files=org/apache/tomcat/util/descriptor/tagplugin/**
+exclude.files=org/apache/tomcat/util/descriptor/tld/**
+
+<!-- Remove Digester Support -->
+exclude.files=org/apache/tomcat/util/digester/**
+
+<!-- TODO - For now, remove SSL until we have an example -->
+exclude.files=org/apache/tomcat/util/net/jsse/**
+exclude.files=org/apache/tomcat/util/net/openssl/**
+
+<!-- Remove without-reflection code generator -->
+exclude.files=org/apache/tomcat/util/xreflection/**
+
+<!-- Remove DefaultServlet -->
+exclude.files=org/apache/catalina/servlets/DefaultServlet*.*

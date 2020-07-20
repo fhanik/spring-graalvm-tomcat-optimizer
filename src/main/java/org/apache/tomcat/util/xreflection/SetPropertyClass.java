@@ -21,7 +21,7 @@ import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.tomcat.util.IntrospectionUtils;
+import static org.apache.tomcat.util.xreflection.ObjectReflectionPropertyInspector.capitalize;
 
 final class SetPropertyClass {
 
@@ -186,7 +186,7 @@ final class SetPropertyClass {
 
             } else {
                 code.append(ReflectionLessCodeGenerator.getIndent(3))
-                    .append("//no set" + IntrospectionUtils.capitalize(property.getPropertyName())+ " method found on this class")
+                    .append("//no set" + capitalize(property.getPropertyName())+ " method found on this class")
                     .append(System.lineSeparator())
                     ;
             }
@@ -261,7 +261,7 @@ final class SetPropertyClass {
         String[] classParts = clazz.getName().split("\\.|\\$");
         StringBuilder methodInvocation = new StringBuilder("setPropertyFor");
         for (String s : classParts) {
-            methodInvocation.append(IntrospectionUtils.capitalize(s));
+            methodInvocation.append(capitalize(s));
         }
         methodInvocation.append("(")
         .append(OBJECT_VAR_NAME)
@@ -279,7 +279,7 @@ final class SetPropertyClass {
         String[] classParts = clazz.getName().split("\\.|\\$");
         StringBuilder methodInvocation = new StringBuilder("private static boolean setPropertyFor");
         for (String s : classParts) {
-            methodInvocation.append(IntrospectionUtils.capitalize(s));
+            methodInvocation.append(capitalize(s));
         }
         methodInvocation.append("(Object ")
             .append(OBJECT_VAR_NAME)
@@ -314,7 +314,7 @@ final class SetPropertyClass {
         String[] classParts = clazz.getName().split("\\.|\\$");
         StringBuilder methodInvocation = new StringBuilder("getPropertyFor");
         for (String s : classParts) {
-            methodInvocation.append(IntrospectionUtils.capitalize(s));
+            methodInvocation.append(capitalize(s));
         }
         methodInvocation.append("(")
             .append(OBJECT_VAR_NAME)
@@ -328,7 +328,7 @@ final class SetPropertyClass {
         String[] classParts = clazz.getName().split("\\.|\\$");
         StringBuilder methodInvocation = new StringBuilder("private static Object getPropertyFor");
         for (String s : classParts) {
-            methodInvocation.append(IntrospectionUtils.capitalize(s));
+            methodInvocation.append(capitalize(s));
         }
         methodInvocation.append("(Object ")
             .append(OBJECT_VAR_NAME)
@@ -379,7 +379,7 @@ final class SetPropertyClass {
 
             } else {
                 code.append(ReflectionLessCodeGenerator.getIndent(3))
-                    .append("//no get" + IntrospectionUtils.capitalize(property.getPropertyName())+ " method found on this class")
+                    .append("//no get" + capitalize(property.getPropertyName())+ " method found on this class")
                     .append(System.lineSeparator())
                 ;
             }

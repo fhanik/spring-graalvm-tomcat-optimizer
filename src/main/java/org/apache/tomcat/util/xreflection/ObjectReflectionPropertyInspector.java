@@ -30,8 +30,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.tomcat.util.IntrospectionUtils;
-
 public final class ObjectReflectionPropertyInspector {
 
     public static void main(String... args) throws Exception {
@@ -162,7 +160,7 @@ public final class ObjectReflectionPropertyInspector {
     }
 
     static Method findGetter(Class<?> declaringClass, String propertyName) {
-        for (String getterName : Arrays.asList("get" + IntrospectionUtils.capitalize(propertyName), "is" + propertyName)) {
+        for (String getterName : Arrays.asList("get" + capitalize(propertyName), "is" + propertyName)) {
             try {
                 Method method = declaringClass.getMethod(getterName);
                 if (!Modifier.isPrivate(method.getModifiers())) {
@@ -184,7 +182,7 @@ public final class ObjectReflectionPropertyInspector {
 
     static Method findSetter(Class<?> declaringClass, String propertyName, Class<?> propertyType) {
         try {
-            Method method = declaringClass.getMethod("set" + IntrospectionUtils.capitalize(propertyName), propertyType);
+            Method method = declaringClass.getMethod("set" + capitalize(propertyName), propertyType);
             if (!Modifier.isPrivate(method.getModifiers())) {
                 return method;
             }
@@ -253,11 +251,11 @@ public final class ObjectReflectionPropertyInspector {
             if (isAllowedField(field)) {
                 Method getter = findGetter(
                     field.getDeclaringClass(),
-                    IntrospectionUtils.capitalize(field.getName())
+                    capitalize(field.getName())
                 );
                 Method setter = findSetter(
                     field.getDeclaringClass(),
-                    IntrospectionUtils.capitalize(field.getName()),
+                    capitalize(field.getName()),
                     field.getType()
                 );
                 ReflectionProperty property = new ReflectionProperty(
@@ -278,5 +276,14 @@ public final class ObjectReflectionPropertyInspector {
         } else {
             return spc;
         }
+    }
+
+    public static String capitalize(String name) {
+        if (name == null || name.length() == 0) {
+            return name;
+        }
+        char chars[] = name.toCharArray();
+        chars[0] = Character.toUpperCase(chars[0]);
+        return new String(chars);
     }
 }
