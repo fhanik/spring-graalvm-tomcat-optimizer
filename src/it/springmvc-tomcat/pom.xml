@@ -73,10 +73,10 @@
 				<version>0.9-SNAPSHOT</version>
 				<executions>
 					<execution>
-						<id>touch</id>
-						<phase>validate</phase>
+						<id>optimize-tomcat</id>
+						<phase>package</phase>
 						<goals>
-							<goal>touch</goal>
+							<goal>spring-graalvm-optimize</goal>
 						</goals>
 					</execution>
 				</executions>
