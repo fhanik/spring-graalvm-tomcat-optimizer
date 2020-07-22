@@ -4,16 +4,24 @@ package org.springframework.graalvm.maven;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
+import java.net.JarURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -33,6 +41,9 @@ import org.apache.maven.project.MavenProjectHelper;
     requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class BootOptimizerForApacheTomcat
     extends AbstractMojo {
+
+    @Parameter(defaultValue = "true", required = false)
+    private boolean enabled = true;
     /**
      * Location of the file.
      */
@@ -72,49 +83,65 @@ public class BootOptimizerForApacheTomcat
             f.mkdirs();
         }
 
-        File testMojoFile = new File(f, "testMojoFile.txt");
+        File logFile = new File(f, "spring-graalvm-optimize-jar.log");
+        File bootJar = new File(this.outputDirectory, this.finalName+".jar");
 
-        FileWriter w = null;
+        Writer writer = null;
         try {
-            w = new FileWriter(testMojoFile);
-            w.write(this.finalName+".jar\n");
+            final FileWriter w = new FileWriter(logFile, false);
+            writer = w;
 
-            File bootJar = new File(this.outputDirectory, this.finalName+".jar");
-            w.write("File exists:"+bootJar.exists()+"\n");
-
-
-            System.err.println("FILIP 1");
-            URI uri = null;
-            try {
-                uri = new URI("jar:file:"+bootJar.getAbsolutePath());
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
+            if (!enabled) {
+                w.write("Skipping Boot Library Optimization: "+this.finalName+".jar\n");
+                return;
             }
-            System.err.println("FILIP 1.5: "+uri.toString());
+
+            w.write("Processing Boot library: "+this.finalName+".jar\n");
+
+            URI uri = new URI("jar:file:"+bootJar.getAbsolutePath());
             try (FileSystem zipfs = FileSystems.newFileSystem(uri, fileSystemProps)) {
-                System.err.println("FILIP 2");
-                Path pathInZipfile = zipfs.getPath("/BOOT-INF/lib/tomcat-embed-programmatic-9.0.38-dev.jar");
-                System.err.println("FILIP 3");
-                File tempFile = new File(this.outputDirectory, "temp-tomcat-embed.jar");
-                if (tempFile.exists()) {
-                    tempFile.delete();
+                final AtomicReference<Path> foundTomcatLibrary = new AtomicReference<>();
+                Files.walkFileTree(zipfs.getPath("/"), new SimpleFileVisitor<Path>() {
+                    @Override
+                    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+                        throws IOException {
+                        String name =file.getFileName().toString();
+                        w.write("Checking file: "+name+" with path: "+file+"\n");
+                        if (name.startsWith("tomcat-embed-core") || name.startsWith("tomcat-embed-programmatic")) {
+                            w.write("Removing from JAR: "+file.getFileName().toString()+"\n");
+                            Files.delete(file);
+                            foundTomcatLibrary.set(file);
+                            return FileVisitResult.TERMINATE;
+                        } else {
+                            return FileVisitResult.CONTINUE;
+                        }
+                    }
+                });
+                Path destination = foundTomcatLibrary.get();
+                if (destination != null) {
+                    String replacementFileName = "tomcat-embed-programmatic-9.0.38-dev.jar";
+                    String name = destination.toString();
+                    w.write("Replacing '" + name + "' with '" + replacementFileName+"'\n");
+                    destination = zipfs.getPath(name.replaceFirst("tomcat-embed.*\\.jar", replacementFileName));
+                    //download a replacement JAR
+                    URL replacementLibraryUrl = new URL("https://drive.google.com/u/0/uc?id=1tKjLkn_dVFdEejsL7IKkg6ljeTB-hDe-&export=download");
+                    w.write("Downloading new JAR: "+replacementLibraryUrl.toString()+"\n");
+
+                    Path replacementJar = Paths.get(new File(this.outputDirectory, replacementFileName).getAbsolutePath());
+                    Files.copy(replacementLibraryUrl.openStream(), replacementJar, StandardCopyOption.REPLACE_EXISTING);
+                    w.write("Updating Boot Jar With: "+replacementJar.toString()+"\n");
+                    //update the Spring Boot JAR with the newly downloaded replacement
+                    Files.copy(replacementJar, destination, StandardCopyOption.REPLACE_EXISTING);
                 }
-                System.err.println("FILIP 3.1: Tempfile exists: "+tempFile.exists());
-                Path tempFilePath = Paths.get(tempFile.getAbsolutePath());
-                Files.copy(pathInZipfile, tempFilePath);
-                System.err.println("FILIP 3.2: Tempfile exists: "+tempFile.exists());
-                processTomcatOptimizations(tempFile);
-                System.err.println("FILIP 4.1: Attempting to replace a file in the ZIP");
-                // copy a file into the zip file
-                Files.copy(tempFilePath, pathInZipfile, StandardCopyOption.REPLACE_EXISTING);
-                System.err.println("FILIP 4.2: File replace complete");
             }
+        } catch (URISyntaxException e) {
+            throw new MojoExecutionException("Error optimizing file: " + bootJar.getAbsolutePath(), e);
         } catch (IOException e) {
-            throw new MojoExecutionException("Error creating file " + testMojoFile, e);
+            throw new MojoExecutionException("Error optimizing file: " + bootJar.getAbsolutePath(), e);
         } finally {
-            if (w != null) {
+            if (writer != null) {
                 try {
-                    w.close();
+                    writer.close();
                 } catch (IOException e) {
                     // ignore
                 }
@@ -122,19 +149,18 @@ public class BootOptimizerForApacheTomcat
         }
     }
 
-    private void processTomcatOptimizations(File tempFilePath) {
-        URI uri;
+    private void processTomcatOptimizations(File tempFilePath) throws MojoExecutionException {
         try {
-            uri = new URI("jar:file:"+tempFilePath.getAbsolutePath());
+            URI uri = new URI("jar:file:"+tempFilePath.getAbsolutePath());
             try (FileSystem zipfs = FileSystems.newFileSystem(uri, fileSystemProps)) {
                 Path path = zipfs.getPath("/META-INF/native-image/org.apache.tomcat.embed/tomcat-embed-programmatic/native-image.properties");
                 Files.delete(path);
                 System.err.println("FILIP EX: File deleted: "+path.toString());
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new MojoExecutionException("Unable to delete file in ZIP", e);
             }
         } catch (URISyntaxException e) {
-            e.printStackTrace();
+            throw new MojoExecutionException("Unable to optimize JAR file: "+tempFilePath.getAbsolutePath());
         }
     }
 }
